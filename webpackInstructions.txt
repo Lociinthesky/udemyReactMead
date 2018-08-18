@@ -1,0 +1,177 @@
+How-To-Webpack.
+
+If global things are installed,
+
+yarn global remove babel-cli live-server
+//Or
+npm uninstall -g babel-cli live-server
+
+Now
+
+yarn add live-server babel-cli@6.24.1
+
+//babel-cli and live-server will now be dependencies in package.json
+
+On the root object, add a new property called “scripts” in package.json.
+
+“scripts” : {
+	“serve”:”live-server public/”
+},
+
+Yarn run serve 
+//in the terminal this now works. 
+
+“scripts” : {
+  “serve”:”live-server public/”,
+  “build”: “babel src/app.js —-out-file=public/scripts/app.js —-presets=env,react —-watch”
+},
+
+yarn run serve 
+//in terminal 1, above.  
+//in terminal window 2, below:
+yarn run build
+
+//3 big advantages to local: we can use different versions in different apps
+//. we can make scripts
+// all of the things needed for the project are now included in our dependencies.
+
+//*********************—lecture 50, install and configure web pack	
+
+yarn add webpack@3.1.0
+
+
+“scripts” : {
+  “serve”:”live-server public/”,
+  “build”: “webpack —-watch”,
+  “build-babel”: “babel src/app.js —-out-file=public/scripts/app.js —-presets=env,react —-watch”,
+  
+},
+
+
+//notice I changed the name of build.  This won’t work yet.  We must first make a web pack config file.
+
+//create webpack.config.js file in the root folder.
+
+//we need to tell it 2 critical pieces of info. the entry (input file src/app.js), and the output, (bundle)
+
+//In web pack config
+
+module.exports = {
+  entry: ‘./src/app.js’,
+  Output: {
+   Path: ‘’,     //absolute path, THERE IS A 2-STEP (3?) TRICK TO GETTING THIS
+   Filename: ‘bundle.js’
+  }
+}
+
+console.log(__dirname);
+//in terminal, run the file to log __dirname to the terminal like so:
+node webpack.config.js
+//output will be the absolute file path TO WEBPACK.CONFIG.JS which is not what we want.
+
+//We need to join that with the relative path to the public folder using path.join(), like so: (first, we have to add the line to require path at the top of webpack.config.js):
+
+const path = require(‘path’);
+
+module.exports = {
+  entry: ‘./src/app.js’,
+  output: {
+   path: path.join(__dirname, ‘public’),
+   filename: ‘bundle.js’
+  }
+}
+
+
+//www.webpack.js.org  look at the docs and you can see other ways to use Entry etc
+
+//we are done! This is the minimal web pack setup.
+
+//In public, make sure we have an index.html with 
+<body>
+  <div id=“app”></div>
+  <script src=“/bundle.js”></script>
+</body>
+
+//——*******************. ES6 imports and exports. **************************
+//\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+//inside src/, alongside app.js, create utils.js, which looks like this
+console.log('utils.js is running')
+
+export const square = x => x * x;
+export const add = (a, b) => a + b;
+
+//2 kinds of exports  "default" exports and "named" exports.
+//2 ways to do “named” exports ( one in utils.js and one in person.js )
+//\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+
+
+//——————————————————————————————————————————————————————————————————————————————
+//create person.js alongside app.js and utils.js, and create and exp two “named” exports
+
+//in person.js
+const isAdult = age => age >= 18;
+const canDrink = age => age >= 21;
+
+export { isAdult, canDrink }
+
+//——————————————————————————————————————————————————————————————————————————————
+
+//In app.js, we import these the same way
+
+import { square, add } from ‘./utils.js’
+import { isAdult, canDrink } from ‘./person.js’
+
+
+
+
+
+//********************ES6 DEFAULT EXPORTS**********************
+//in utilsWithDefault.js
+
+
+console.log('utilsWithDefault.js is running')
+
+const square = x => x * x;
+const add = (a, b) => a + b;
+const subtract = (c, d) => c - d;
+
+export { square, add, subtract as default} 
+//NOTE!!! CAN ONLY SET ONE DEFAULT AND MUST IMPORT DIFFERENTLY
+
+//in app.js:
+import subtract, { square, add } from ‘./utilsWithDefault.js’
+// or just
+import subtract from ‘./utilsWithDefault.js’
+
+//alternatively
+
+import anyThingIWantToCallSubtractWillWorkIfIUseItBelow from ‘./utilsWithDefault.js’
+
+
+//If we wanted to use the export-first naming convention….
+//in utilsWithDefault.js
+
+
+console.log('utilsWithDefault.js is running')
+
+export const square = x => x * x;
+export const add = (a, b) => a + b;
+
+const subtract = (c, d) => c - d;
+
+export default subtract
+
+//OR we can export default with an anonymous fn!
+
+//***********************************
+//in utilsWithDefault.js
+console.log('utilsWithDefault.js is running')
+
+export const square = x => x * x;
+export const add = (a, b) => a + b;
+export default (c, d) => c - d;
+//************************************
+
+
+
