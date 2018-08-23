@@ -172,6 +172,133 @@ export const square = x => x * x;
 export const add = (a, b) => a + b;
 export default (c, d) => c - d;
 //************************************
+//********************IMPORT NPM MODULES
+//************************************
+/*
+1)install
+2)import
+3)use
+In terminal:
+Yarn add validator@8.0.0
+In app.js, 
+import validator from ‘validator’
 
+This is the same as using something we did write, but we don’t specify a path bc that’s how you import things we did not write.
+
+Now do yarn run serve
+Import validator in app.js
+Do yarn run build
+Try console.log(validator.isEmail(‘test’))
+Should be false.  If you go on the validator documentation, there are many other methods.
+
+bundle.js is now a large file.  If we comment out the import line it will be small again.
+
+Now react and reactDOM
+Yarn add react@16.0.0 react-dom@16.0.0
+Import them.
+Just google an example of how to import if needed.
+
+Next lecture:
+
+Yarn add babel-core@6.25.0 babel-loader@7.1.1
+The latter lets us teach babel how to run certain kinds of things when it sees them.
+Let’s set that up on the module property, put a comma between the last 2 curly braces
+
+You can look up module.rules to see what we are about to do.
+Module: {
+  Rules: [{
+    Loader: ‘babel-loader’,
+    Test: /.js$/,
+    Exclude: /node_modules/
+  }]
+}
+
+Now in root create .babelrc
+
+{
+  “Presets”: [
+    “Env”,
+    “React”
+  ]
+}
+
+Now in app.js in our src folder we can type
+
+Import React from ‘react’
+Import ReactDOM from ‘react-dom’
+
+Const template = <p>THIS IS JSX FROM WEBPACK</p>;
+ReactDOM.render(template, document.getElementById(‘app));
+
+This would not have worked before
+Recap: we taught babel to run .js files unless they are found in the /node_modules/ folder
+
+Next lecture: one component per file.
+
+Paste the indecision-app into app.js in src with just the react and reactDOM imports at the top.  It should work
+
+Create a components folder in src.  Make a new file such as AddOption.js for every component.
+
+Put 
+import React from ‘react’ 
+at the top of each.
+
+For class components, just put 
+
+export default class AddOption extends React.Component {
+
+
+For functional components like Option, keep them as they are (in their own file with react imported)
+
+But at the very bottom of the file use 
+
+export default Option;
+
+For IndecisionApp.js in components, the top of the file should look like
+
+import React from 'react';
+import AddOption from './AddOption';
+import Action from './Action';
+import Header from './Header';
+import Options from './Options';
+
+
+Since the latter are used in its render function.  Similarly, the top of Options should be
+
+import React from 'react';
+import Option from './Option';
+
+There may be more examples of this.
+
+*******************
+Challenge:  from app.js which now has the class IndecisionApp component
+*******************
+//move the component code into its own file in components
+//setup import(s) and export
+//(move these imports into that file.  Now app.js will be made extremely short,
+//having only 3 import statements at the top, and then
+
+ReactDOM.render(<IndecisionApp />, document.getElementById('app'));
+
+//at the bottom.
+
+
+
+
+*******************
+Next lecture: source maps with web pack:
+*******************
+
+
+//further setting up web pack devtool will make finding bugs easier.
+
+//we do this in webpack.config.js
+//put another comma between the last two curly braces.
+//add:
+
+  devtool: 'cheap-module-eval-source-map'
+
+//now, bugs in code will lead us directly to the component file (link on top right) in the terminal!
+//note: every time you mess with web pack you have to restart the web pack build in the //terminal
 
 
