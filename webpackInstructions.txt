@@ -298,7 +298,7 @@ Next lecture: source maps with web pack:
 
   devtool: 'cheap-module-eval-source-map'
 
-//now, bugs in code will lead us directly to the component file (link on top right) in the terminal!
+//now, bugs in code will lead us directly to the component file (link on top right) in the terminal! 
 //note: every time you mess with web pack you have to restart the web pack build in the //terminal
 
 
